@@ -1,38 +1,55 @@
 local tping = false
+game:GetService("TeleportService").TeleportInitFailed:Connect(function(player, teleportResult, errorMessage)
+    tping = false
+    warn("Trying Again")
+end)
 function Teleport()
+    if tping then return end
+    tping = true
     spawn(function()
+        warn("Getting all servers table.")
         local sl = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/".. game.PlaceId.. "/servers/Public?sortOrder=Asc&limit=100"))
+        warn("Got all servers table.")
+        local avservers = {}
+        warn("Teleporting")
         for i,v in pairs(sl.data) do
-           if v.playing ~= v.maxPlayers and not tping then
-               tping = true
-               game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id, game.Players.LocalPlayer)
+           if v.playing ~= v.maxPlayers then
+               table.Insert(avservers,1,v)
            end
         end
+        game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, avservers[math.random(1,#avservers)].id, game.Players.LocalPlayer)
     end)
 end
+local lastping = 0
+local the = 0
 spawn(function()
-    local lastping = 0
-    local the = 0
     while true do
         local ping = task.wait()
-        local ae = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString(math.round(2/ping))
-        for v in ae:gmatch("%d+") do
-            lastping = tonumber(v)
-            ae = tonumber(v)
-            break
-        end
-        if the > 500 then
-            Teleport()
-        elseif ae == lastping then
-            the = the + 1 
-        else
-            the = 0
-        end
+        spawn(function()
+            local ae = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString(math.round(2/ping))
+            for v in ae:gmatch("%d+") do
+                lastping = tonumber(v)
+                ae = tonumber(v)
+                break
+            end
+            if the > 400 then
+                Teleport()
+            elseif ae == lastping then
+                the = the + 1 
+            else
+                the = 0
+            end
+        end)
     end
 end)
 
-local delay = tick()
+repeat task.wait() until game and game:IsLoaded()
 
+warn("bye ss.. made by leaderr#8003")
+
+local delay = tick()
+local funnimessage = {"zeus stop banning us pls","we are not done yet","BUNNY LEARN HOW TO MAKE GOOD GAMES","YOU THINK YOU GOT RID OF US???","Goodbye soulshatters.","Rework when?"}
+funnimessage = funnimessage[math.random(1,#funnimessage)]
 while true do
     spawn(function()
         spawn(function()
@@ -45,7 +62,7 @@ while true do
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0,1000,0)
             game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
             spawn(function()
-                local A_1 = [[goodbye soulshatters :)]]
+                local A_1 = funnimessage.." - B Event"
                 local A_2 = "All"
                 local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
                 Event:FireServer(A_1, A_2)
@@ -56,7 +73,9 @@ while true do
                     [4] = game.Players.LocalPlayer.Character
                 }
                 local event = game:GetService("ReplicatedStorage").Remotes.Events
-                event:FireServer(v1)
+                if the == 0 then
+                    event:FireServer(v1)
+                end
             end)
         end
     end)
