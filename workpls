@@ -34,7 +34,7 @@ spawn(function()
             end
             if serverhopcount > 400 then
                 Teleport()
-            elseif serverhopcount == lastping then
+            elseif ae == lastping then
                 serverhopcount = serverhopcount + 1 
             else
                 serverhopcount = 0
@@ -73,9 +73,9 @@ while true do
                     [4] = game.Players.LocalPlayer.Character
                 }
                 local event = game:GetService("ReplicatedStorage").Remotes.Events
-                if game.Players.LocalPlayer.Character:WaitForChild("Data"):WaitForChild("Lv").Value < 10 then
+                --if game.Players.LocalPlayer.Character:WaitForChild("Data"):WaitForChild("Lv").Value < 10 then
                     event:FireServer(v1)
-                end
+               -- end
             end)
         end
     end)
