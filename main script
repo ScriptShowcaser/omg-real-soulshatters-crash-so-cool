@@ -1,0 +1,64 @@
+local tping = false
+function Teleport()
+    spawn(function()
+        local sl = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/".. game.PlaceId.. "/servers/Public?sortOrder=Asc&limit=100"))
+        for i,v in pairs(sl.data) do
+           if v.playing ~= v.maxPlayers and not tping then
+               tping = true
+               game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, v.id, game.Players.LocalPlayer)
+           end
+        end
+    end)
+end
+spawn(function()
+    local lastping = 0
+    local the = 0
+    while true do
+        local ping = task.wait()
+        local ae = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString(math.round(2/ping))
+        for v in ae:gmatch("%d+") do
+            lastping = tonumber(v)
+            ae = tonumber(v)
+            break
+        end
+        if the > 500 then
+            Teleport()
+        elseif ae == lastping then
+            the = the + 1 
+        else
+            the = 0
+        end
+    end
+end)
+
+local delay = tick()
+
+while true do
+    spawn(function()
+        spawn(function()
+            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("CharacterSelection") and not game.Players.LocalPlayer.PlayerGui:FindFirstChild("CharacterSelection"):FindFirstChild("alrchecked") then
+                Instance.new("BoolValue",game.Players.LocalPlayer.PlayerGui:FindFirstChild("CharacterSelection")).Name = "alrchecked"
+                game.Players.LocalPlayer.PlayerGui:FindFirstChild("CharacterSelection"):WaitForChild("Character").Value = "Frisk"
+            end
+        end)
+        if game.Players.LocalPlayer.Character then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0,1000,0)
+            game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
+            spawn(function()
+                local A_1 = [[goodbye soulshatters :)]]
+                local A_2 = "All"
+                local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+                Event:FireServer(A_1, A_2)
+                local v1 = {
+                    [1] = getrenv()._G.Pass, 
+                    [2] = "Damage", 
+                    [3] = math.huge, 
+                    [4] = game.Players.LocalPlayer.Character
+                }
+                local event = game:GetService("ReplicatedStorage").Remotes.Events
+                event:FireServer(v1)
+            end)
+        end
+    end)
+    task.wait()
+end
