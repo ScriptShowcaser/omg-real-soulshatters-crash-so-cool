@@ -11,13 +11,14 @@ function Teleport()
         local sl = game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/".. game.PlaceId.. "/servers/Public?sortOrder=Asc&limit=100"))
         warn("Got all servers table.")
         local avservers = {}
-        warn("Teleporting")
         for i,v in pairs(sl.data) do
            if v.playing ~= v.maxPlayers then
-               table.Insert(avservers,1,v)
+               table.insert(avservers,1,v)
            end
         end
-        game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, avservers[math.random(1,#avservers)].id, game.Players.LocalPlayer)
+        local chosen = avservers[math.random(1,#avservers)]
+        warn("Teleporting to jobid: "..chosen.id)
+        game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, chosen.id, game.Players.LocalPlayer)
     end)
 end
 local lastping = 0
@@ -32,7 +33,7 @@ spawn(function()
                 ae = tonumber(v)
                 break
             end
-            if serverhopcount > 400 then
+            if serverhopcount > 1 then
                 Teleport()
             elseif ae == lastping then
                 serverhopcount = serverhopcount + 1 
