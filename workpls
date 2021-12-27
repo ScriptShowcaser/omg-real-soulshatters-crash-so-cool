@@ -73,7 +73,7 @@ while true do
                     [4] = game.Players.LocalPlayer.Character
                 }
                 local event = game:GetService("ReplicatedStorage").Remotes.Events
-                if serverhopcount == 0 then
+                if game.Players.LocalPlayer.Character:WaitForChild("Data"):WaitForChild("Lv").Value < 10 then
                     event:FireServer(v1)
                 end
             end)
