@@ -1,7 +1,9 @@
 local tping = false
 game:GetService("TeleportService").TeleportInitFailed:Connect(function(player, teleportResult, errorMessage)
-    tping = false
-    warn("Trying Again")
+    if not errorMessage == Enum.TeleportResult.IsTeleporting then
+        tping = false
+        warn("Trying Again")
+    end
 end)
 function Teleport()
     if tping then return end
@@ -33,7 +35,7 @@ spawn(function()
                 ae = tonumber(v)
                 break
             end
-            if serverhopcount > 1 then
+            if serverhopcount > 300 then
                 Teleport()
             elseif ae == lastping then
                 serverhopcount = serverhopcount + 1 
