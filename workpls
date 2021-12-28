@@ -61,6 +61,11 @@ while true do
                 game.Players.LocalPlayer.PlayerGui:FindFirstChild("CharacterSelection"):WaitForChild("Character").Value = "Frisk"
             end
         end)
+        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("GameOver") and game.Players.LocalPlayer.PlayerGui:FindFirstChild("GameOver").Frame.BackgroundTransparency ~= 1 then
+            if mouse1click then
+                mouse1click()
+            end
+        end
         if game.Players.LocalPlayer.Character then
             if not game.Players.LocalPlayer.Character.HumanoidRootPart:FindFirstChildOfClass("BodyVelocity") then
                             local bv = Instance.new("BodyVelocity",game.Players.LocalPlayer.Character.HumanoidRootPart)
